@@ -1079,7 +1079,7 @@ function init() {
     card.className = 'doc-card';
     const num = String(i + 1).padStart(2, '0');
     card.innerHTML = `<div class="num">${num}</div><div class="title">${doc.title}</div><div class="desc">${doc.desc}</div>`;
-    card.onclick = () => selectDoc(doc, card);
+    var urlMap = {\"debt\":\"/qiantiao/\",\"iou\":\"/jietiao/\",\"partner\":\"/hezuoxieyi/\",\"transfer\":\"/zhuanranghetong/\",\"employment\":\"/laodonghetong/\",\"prenup\":\"/hunqiancaichan/\",\"complaint\":\"/minshiqisuzhuang/\",\"labor\":\"/laodongzhongcai/\",\"accident\":\"/jiaotongshigu/\",\"divorce\":\"/lihunxieyishu/\",\"bail\":\"/qubaohoushen/\",\"rental\":\"/zufanghetong/\"}; card.onclick = function() { var u = urlMap[doc.id]; if (u) { window.location.href = u; } else { selectDoc(doc, card); } };
     card.dataset.docId = doc.id;
     grid.appendChild(card);
   });
@@ -4255,6 +4255,7 @@ updateActivationUI();
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"借条不写身份证号有效吗？","acceptedAnswer":{"@type":"Answer","text":"借条仍然有效，但在诉讼中需要额外举证，增加了举证难度。建议写上身份证号。"}},{"@type":"Question","name":"借条用手写还是打印？","acceptedAnswer":{"@type":"Answer","text":"法律没有强制要求。但手写借条（尤其是签名部分）更难被否认，建议签名和日期手写，正文可以打印。"}},{"@type":"Question","name":"没有借条只有转账记录能起诉吗？","acceptedAnswer":{"@type":"Answer","text":"可以起诉，但举证难度大。转账记录只能证明给了钱，不能证明是借款。建议补充微信聊天记录等佐证。"}},{"@type":"Question","name":"借条的诉讼时效是多久？","acceptedAnswer":{"@type":"Answer","text":"3年。从约定的还款日期次日起算。期间催过款的，从最后一次催款日起重新计算3年。"}},{"@type":"Question","name":"借条上的利息怎么约定才合法？","acceptedAnswer":{"@type":"Answer","text":"利率不得超过合同成立时一年期贷款市场报价利率（LPR）的四倍，超过部分不受法律保护。"}},{"@type":"Question","name":"朋友借钱没写借条怎么办？","acceptedAnswer":{"@type":"Answer","text":"可以事后补签借条；通过微信、短信等方式确认借款事实，保留聊天记录作为证据。"}}]}</script>
 </body>
 </html>
+
 
 
 
