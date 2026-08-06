@@ -1,0 +1,26 @@
+﻿function composeDebtData() {
+  const data = {};
+  data.debtor = getFieldVal('g_debtor');
+  data.debtorId = getFieldVal('g_debtorId');
+  data.debtorPhone = getFieldVal('g_debtorPhone');
+  data.creditor = getFieldVal('g_creditor');
+  data.creditorId = getFieldVal('g_creditorId');
+  data.creditorPhone = getFieldVal('g_creditorPhone');
+  data.debtAmount = getFieldVal('g_debtAmount');
+  data.debtReason = getFieldVal('g_debtReason');
+  data.debtDate = getFieldVal('g_debtDate');
+  data.repayDate = getFieldVal('g_repayDate');
+  data.hasInterest = getRadioValue('g_hasInterest') || '无利息';
+  data.debtRate = getFieldVal('g_debtRate');
+  data.debtInterestAmount = getFieldVal('g_debtInterestAmount');
+  data.hasGuarantor = getRadioValue('g_hasGuarantor') || '无担保';
+  data.guarantor = getFieldVal('g_guarantor');
+  data.guarantorId = getFieldVal('g_guarantorId');
+  data.guarantorPhone = getFieldVal('g_guarantorPhone');
+  data.amtCN = numberToCNY(data.debtAmount) || '';
+  data.debtDateFmt = fmtDate(data.debtDate);
+  data.repayDateFmt = fmtDate(data.repayDate);
+  return data;
+}
+
+

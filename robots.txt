@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://fabao99.cn/sitemap.xml

@@ -1,0 +1,57 @@
+﻿debt: {
+    title:'欠条',sections:[
+      {title:'双方信息',fields:[
+        {type:'label',text:'⚠️ 欠条≠借条。欠条适用于货款、工程款、服务费等非借款类债务。如果是借钱给别人，请返回选「借条」。'},
+        {type:'label',text:'欠款人（欠钱的一方）'},
+        {id:'debtor',label:'姓名',type:'text',required:true,placeholder:'欠款人真实姓名'},
+        {id:'debtorId',label:'身份证号',type:'idcard',required:true},
+        {id:'debtorPhone',label:'联系电话',type:'phone',placeholder:'方便联系催收'},
+        {type:'label',text:'债权人（被欠钱的一方）'},
+        {id:'creditor',label:'姓名',type:'text',required:true,placeholder:'债权人真实姓名'},
+        {id:'creditorId',label:'身份证号',type:'idcard',required:true},
+        {id:'creditorPhone',label:'联系电话',type:'phone',placeholder:'方便联系'}
+      ]},
+      {title:'欠款详情',fields:[
+        {type:'label',text:'欠了多少钱？'},
+        {id:'debtAmount',label:'欠款金额（元）',type:'number',required:true,placeholder:'如：50000'},
+        {type:'label',text:'为什么欠这笔钱？'},
+        {id:'debtReason',label:'欠款事由',type:'textarea',required:true,placeholder:'例如：拖欠2026年1-6月装修工程款。把原因写清楚，避免对方事后不认账。'},
+        {type:'label',text:'什么时候欠的？什么时候还？'},
+        {id:'debtDate',label:'欠款日期',type:'date',hint:'欠款发生的日期。不记得具体哪天可填大概日期，也可留空'},
+        {id:'repayDate',label:'承诺还款日期',type:'date',hint:'约定什么时候还清。不填则视为未约定还款日期——此时债权人可随时要求还款，但诉讼时效从欠条签署之日起算3年'},
+        {type:'label',text:'要不要算利息？'},
+        {id:'hasInterest',label:'约定利息',type:'radio',options:['无利息','按年利率计息','按固定金额计息'],default:'无利息'},
+        {id:'debtRate',label:'年利率说明',type:'text',showIf:{hasInterest:'按年利率计息'},placeholder:'如：年利率10%，自欠款之日起计算至实际还清之日止。注意：利率不得超过合同成立时一年期LPR的4倍'},
+        {id:'debtInterestAmount',label:'利息总额（元）',type:'number',showIf:{hasInterest:'按固定金额计息'},placeholder:'双方事先约定的固定利息金额'}
+      ]},
+      {title:'担保',fields:[
+        {type:'label',text:'有没有人做担保？有担保人的话，欠款人还不上可以找担保人要。'},
+        {id:'hasGuarantor',label:'有无担保人',type:'radio',options:['有担保人','无担保'],default:'无担保'},
+        {id:'guarantor',label:'担保人姓名',type:'text',showIf:{hasGuarantor:'有担保人'},placeholder:'担保人真实姓名'},
+        {id:'guarantorId',label:'担保人身份证号',type:'idcard',showIf:{hasGuarantor:'有担保人'}},
+        {id:'guarantorPhone',label:'担保人联系电话',type:'phone',showIf:{hasGuarantor:'有担保人'},placeholder:'方便联系'}
+      ]}
+    ],
+    render(d){
+      const G=d.hasGuarantor==='有担保人'&&d.guarantor;
+      const amtCN=numberToCNY(d.debtAmount)||'';
+      const debtDateStr=d.debtDate?fmtDate(d.debtDate):'本欠条出具之日';
+      let interestText;
+      if(d.hasInterest==='按年利率计息')interestText=d.debtRate?'，约定自'+(d.debtDate?fmtDate(d.debtDate):'欠款之日')+'起按'+d.debtRate+'计算利息至实际还清之日止':'，约定按年利率计息';
+      else if(d.hasInterest==='按固定金额计息')interestText=d.debtInterestAmount?'，约定利息共计人民币'+d.debtInterestAmount+'元':'，约定按固定金额计息';
+      else interestText='，未约定利息';
+      return `<h3>欠 条</h3>
+<p>欠款人：${M(d,'debtor')}，身份证号：${M(d,'debtorId')}${d.debtorPhone?'，联系电话：'+d.debtorPhone:''}</p>
+<p>债权人：${M(d,'creditor')}，身份证号：${M(d,'creditorId')}${d.creditorPhone?'，联系电话：'+d.creditorPhone:''}</p>
+${G?'<p>担保人：'+d.guarantor+'，身份证号：'+(d.guarantorId||'___')+(d.guarantorPhone?'，联系电话：'+d.guarantorPhone:'')+'</p>':''}
+<p>兹欠款人因${d.debtReason||'___'}，截至${debtDateStr}，经双方对账确认，欠款人尚欠债权人人民币${d.debtAmount||'___'}元（大写：${amtCN}）${d.repayDate?'，承诺于'+fmtDate(d.repayDate)+'前一次性还清':'。债权人有权随时要求欠款人还款，但应给予合理期限'}${interestText}。</p>
+<p>欠款人承诺按期足额偿还上述欠款本息。若逾期未还，债权人有权要求欠款人一次性偿还全部欠款本息，并承担债权人为实现债权所支出的全部费用（包括但不限于诉讼费、律师费、保全费、公告费等）。</p>
+<p>双方确认，本欠条所载欠款金额已经双方核对无误，系双方真实意思表示。</p>
+${G?'<p>担保人自愿为上述欠款本息向债权人提供连带责任保证，保证期间为主债务履行期限届满之日起两年。若未约定还款日期，则保证期间自本欠条出具之日起算。</p>':''}
+<p>因本欠条发生的任何争议，双方应友好协商解决；协商不成的，任何一方均有权向债权人住所地有管辖权的人民法院提起诉讼。</p>
+<p>本欠条一式${G?'三':'两'}份，欠款人、债权人${G?'、担保人':''}各执一份，自各方签字之日起生效，具有同等法律效力。</p>
+<p style="margin-top:30px;text-align:right;">欠款人（签字并按手印）：__________</p><p style="text-align:right;">日期：__________</p>
+<p style="margin-top:16px;text-align:right;">债权人（签字）：__________</p><p style="text-align:right;">日期：__________</p>
+${G?'<p style="margin-top:16px;text-align:right;">担保人（签字并按手印）：__________</p><p style="text-align:right;">日期：__________</p>':''}`;
+  }},
+
