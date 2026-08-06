@@ -1079,7 +1079,7 @@ function init() {
     card.className = 'doc-card';
     const num = String(i + 1).padStart(2, '0');
     card.innerHTML = `<div class="num">${num}</div><div class="title">${doc.title}</div><div class="desc">${doc.desc}</div>`;
-    var urlMap = {\"debt\":\"/qiantiao/\",\"iou\":\"/jietiao/\",\"partner\":\"/hezuoxieyi/\",\"transfer\":\"/zhuanranghetong/\",\"employment\":\"/laodonghetong/\",\"prenup\":\"/hunqiancaichan/\",\"complaint\":\"/minshiqisuzhuang/\",\"labor\":\"/laodongzhongcai/\",\"accident\":\"/jiaotongshigu/\",\"divorce\":\"/lihunxieyishu/\",\"bail\":\"/qubaohoushen/\",\"rental\":\"/zufanghetong/\"}; card.onclick = function() { var u = urlMap[doc.id]; if (u) { window.location.href = u; } else { selectDoc(doc, card); } };
+    var urlMap = {"divorce":"/lihunxieyishu/","iou":"/jietiao/","rental":"/zufanghetong/","labor":"/laodongzhongcai/","complaint":"/minshiqisuzhuang/","employment":"/laodonghetong/","transfer":"/zhuanranghetong/","bail":"/qubaohoushen/","debt":"/qiantiao/","partner":"/hezuoxieyi/","prenup":"/hunqiancaichan/","accident":"/jiaotongshigu/"}; card.onclick = function() { var u = urlMap[doc.id]; if (u) { window.location.href = u; } else { selectDoc(doc, card); } };
     card.dataset.docId = doc.id;
     grid.appendChild(card);
   });
@@ -4223,6 +4223,7 @@ updateActivationUI();
 
 </body>
 </html>
+
 
 
 
