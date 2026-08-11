@@ -203,13 +203,10 @@ document.addEventListener('keydown', function(e) {
       <div class="step"><span class="num">3</span>支付</div>
       <div class="step"><span class="num">4</span>下载</div>
     </div>
-    <div style="display:flex;justify-content:center;margin-bottom:12px;">
-      <span id="activationBadge" style="display:none;"></span>
-    </div>
     <div class="preview-banner">
-      <span class="lock-icon">🔒</span> 预览版 — 内容已锁定，请付款后下载完整Word文件 <span class="lock-icon">🔒</span>
+      预览版 — 微信扫码支付 ￥9.90 即可下载完整Word文件
     </div>
-    <div class="a4-paper" id="a4Preview" oncontextmenu="return false" oncopy="return false" oncut="return false"></div>
+<div class="a4-paper" id="a4Preview" oncontextmenu="return false" oncopy="return false" oncut="return false"></div>
     <div class="preview-actions" style="padding:20px 16px;justify-content:center;flex-wrap:wrap;">
       <button class="btn-outline" onclick="goBackToForm()" style="min-width:120px;">返回修改</button>
       <button class="btn-primary" id="btnDownload" onclick="showPayment()" style="min-width:240px;">下载Word文件（.docx）</button>
@@ -221,24 +218,15 @@ document.addEventListener('keydown', function(e) {
 <div class="modal-overlay hidden" id="paymentModal">
   <div class="modal-card">
     <div style="font-size:16px;font-weight:500;color:var(--text);">确认支付</div>
-    <div class="price">￥99</div>
+    <div class="price">￥9.90</div>
     <div class="price-label">法包 · 法律文书生成</div>
     <div class="qr-box">
       <img src="收款二维码.jpg" style="width:100%;height:100%;object-fit:contain;" alt="微信收款码" />
     </div>
-    <div class="order-no">订单号：<span id="orderNo"></span></div>
-    <div style="text-align:center;margin:16px 0;padding:14px 16px;background:#F8FAFC;border-radius:12px;border:1px solid var(--border);">
-      <div style="font-size:14px;color:var(--text);margin-bottom:6px;">付款后截图联系客服微信领取激活码</div>
-      <div style="font-size:20px;font-weight:700;color:#4F46E5;margin-bottom:8px;">fabao99cn</div>
-      <div onclick="navigator.clipboard.writeText('fabao99cn').then(()=>{this.innerHTML='<span style=font-size:13px;color:#16A34A;>✓ 已复制</span>'}).catch(()=>alert('fabao99cn'))" style="cursor:pointer;display:inline-block;background:#fff;border:1.5px solid #4F46E5;color:#4F46E5;border-radius:8px;padding:6px 18px;font-size:13px;font-weight:500;">复制微信号</div>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
-      <input type="text" id="activationCode" placeholder="输入激活码" style="flex:1;height:44px;padding:0 14px;border:1.5px solid var(--border);border-radius:10px;font-size:16px;text-transform:uppercase;" />
-      <button onclick="handleActivation()" style="height:44px;padding:0 20px;background:linear-gradient(135deg,#4F46E5,#3B82F6);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;">激活</button>
-    </div>
-    <div id="activationMsg" style="font-size:13px;margin-top:8px;min-height:18px;"></div>
+    <div style="font-size:13px;color:var(--text-secondary);margin:12px 0;">微信扫码支付 ¥9.90 即可下载Word文件</div>
     <div class="modal-btns">
-      <button class="btn-secondary" style="flex:1;" onclick="closePayment()">取消</button>
+      <button id="btnPaidCountdown" onclick="downloadWord()" disabled style="flex:1;height:48px;background:#1E3A5F;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;">请先扫码付款（15s）</button>
+      <button class="btn-secondary" style="width:80px;height:48px;flex:none;" onclick="closePayment()">取消</button>
     </div>
   </div>
 </div>
@@ -249,9 +237,7 @@ document.addEventListener('keydown', function(e) {
     <div style="font-size:18px;font-weight:600;color:var(--text);margin-bottom:20px;">联系客服</div>
     <div style="background:#F8FAFC;border:1.5px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:20px;">
       <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">添加客服微信，获取激活码</div>
-      <div style="font-size:26px;font-weight:700;color:#4F46E5;letter-spacing:2px;margin-bottom:4px;">fabao99cn</div>
       </div>
-    <div onclick="navigator.clipboard.writeText('fabao99cn').then(()=>{this.innerHTML='<span style=font-size:15px;>✓ 已复制到剪贴板</span>'}).catch(()=>alert('请手动复制：fabao99cn'))" style="cursor:pointer;background:linear-gradient(135deg,#4F46E5,#3B82F6);color:#fff;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:600;display:inline-block;transition:all .2s;box-shadow:0 4px 14px rgba(79,70,229,.25);" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(79,70,229,.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(79,70,229,.25)'">点击复制微信号</div>
     <div style="margin-top:12px;">
       <a style="cursor:pointer;font-size:13px;color:var(--text-weak);" onclick="document.getElementById('contactModal').classList.add('hidden')">关闭</a>
     </div>
@@ -3778,26 +3764,28 @@ function updateActivationUI() {
     if (btn) { btn.onclick = downloadWord; }
   } else {
     badge.style.display = 'inline-block';
-    badge.textContent = '🔒 未激活 · ￥99 终身使用';
+    badge.textContent = '🔒 未激活 · ￥9.90 终身使用';
     badge.style.cssText = 'display:inline-block;padding:6px 14px;background:#FEF3C7;color:#92400E;border-radius:20px;font-size:13px;font-weight:500;';
   }
 }
 
 // ==================== PAYMENT ====================
 function showPayment() {
-  if (isActivated()) {
-    // Already activated, download directly
-    downloadWord();
-    return;
-  }
   document.getElementById('paymentModal').classList.remove('hidden');
-  document.getElementById('orderNo').textContent = 'LV' + Date.now().toString(36).toUpperCase();
-  document.getElementById('step3').classList.add('active');
-  document.getElementById('activationMsg').textContent = '';
-  document.getElementById('activationCode').value = '';
-  // Reset activation input
-  document.getElementById('activationCode').value = '';
-  document.getElementById('activationMsg').textContent = '';
+  const btn = document.getElementById('btnPaidCountdown');
+  btn.disabled = true;
+  let secs = 15;
+  btn.textContent = '请先扫码付款（' + secs + 's）';
+  const timer = setInterval(function() {
+    secs--;
+    if (secs <= 0) {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.textContent = '付款后点击下载Word文件';
+    } else {
+      btn.textContent = '请先扫码付款（' + secs + 's）';
+    }
+  }, 1000);
 }
 
 async function handleActivation() {
